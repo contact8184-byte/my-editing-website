@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Website</title>
+</head>
+<body>
+  <h1>Hello, this is my first website!</h1>
+  <p>Contact me below:</p>
+
+  <form action="https://formspree.io/f/mvgqjpgv" method="POST">
+    <label>Your Email:</label>
+    <input type="email" name="email" required>
+    <br><br>
+    <label>Your Message:</label>
+    <textarea name="message" required></textarea>
+    <br><br>
+    <button type="submit">Send</button>
+  </form>
+</body>
+</html>
