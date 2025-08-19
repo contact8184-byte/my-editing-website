@@ -1,0 +1,320 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Check, Sparkles, Video, Scissors, Zap, Star, Mail, Phone, MessageCircle, Shield } from "lucide-react";
+
+// Tailwind is available by default in this environment.
+// All UI sits in a single component for easy copy-paste into any React app (Next.js/Vite).
+// To deploy fast: paste this in a fresh Next.js page (app or pages) or a Vite React project and deploy to Vercel/Netlify.
+
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvgqjpgv"; // TODO: replace with your Formspree form ID
+const WHATSAPP_NUMBER = "919999999999"; // TODO: replace with your WhatsApp number (country code + number)
+
+const features = [
+  { icon: <Video className="w-6 h-6" />, title: "Shorts That Convert", desc: "Hooks, captions, pacing and sound design tuned for retention." },
+  { icon: <Scissors className="w-6 h-6" />, title: "48–72h Turnarounds", desc: "Fast delivery with 2 revisions included on every edit." },
+  { icon: <Zap className="w-6 h-6" />, title: "Template-Powered", desc: "Your brand fonts, colors and styling baked into every output." },
+  { icon: <Shield className="w-6 h-6" />, title: "Clear Pricing", desc: "No surprise fees. Simple per-video or monthly bundle plans." },
+];
+
+const plans = [
+  {
+    name: "Starter",
+    price: "₹7,999/mo",
+    pitch: "4 shorts/month (0–30s)",
+    points: [
+      "2-day delivery",
+      "Captions + SFX + basic color",
+      "2 revisions/video",
+      "1 brand style template",
+    ],
+    cta: "Get Starter",
+  },
+  {
+    name: "Growth",
+    featured: true,
+    price: "₹19,999/mo",
+    pitch: "12 shorts/month (0–45s)",
+    points: [
+      "48h delivery",
+      "Custom hooks & thumbnails",
+      "Priority queue",
+      "2 brand style templates",
+    ],
+    cta: "Scale with Growth",
+  },
+  {
+    name: "Pro",
+    price: "₹39,999/mo",
+    pitch: "30 shorts/month (0–60s)",
+    points: [
+      "24–48h delivery window",
+      "Dedicated editor",
+      "Idea board + content plan",
+      "3 brand style templates",
+    ],
+    cta: "Go Pro",
+  },
+];
+
+const portfolio = [
+  { id: 1, title: "Finance Hook Reel", tags: ["Finance", "Captions"], thumb: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=1200&auto=format&fit=crop" },
+  { id: 2, title: "Fitness Before/After", tags: ["Fitness", "Transitions"], thumb: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop" },
+  { id: 3, title: "Travel Punch Edits", tags: ["Travel", "Speed Ramps"], thumb: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop" },
+  { id: 4, title: "Podcast Cutdowns", tags: ["Podcast", "Subtitles"], thumb: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1200&auto=format&fit=crop" },
+];
+
+function Badge({ children }) {
+  return <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">{children}</span>;
+}
+
+function SectionTitle({ kicker, heading, sub }) {
+  return (
+    <div className="text-center max-w-2xl mx-auto">
+      <div className="text-sm font-semibold tracking-wider uppercase opacity-80">{kicker}</div>
+      <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">{heading}</h2>
+      {sub && <p className="mt-3 text-muted-foreground">{sub}</p>}
+    </div>
+  );
+}
+
+export default function ReelSprint() {
+  const [sending, setSending] = useState(false);
+  const [ok, setOk] = useState(false);
+  const [err, setErr] = useState("");
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setSending(true); setOk(false); setErr("");
+    const data = Object.fromEntries(new FormData(e.currentTarget));
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(e.currentTarget),
+      });
+      if (res.ok) { setOk(true); (e.target).reset(); }
+      else { setErr("Something went wrong. Try WhatsApp or email."); }
+    } catch (e) {
+      setErr("Network error. Try again or ping on WhatsApp.");
+    } finally { setSending(false); }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
+      {/* Nav */}
+      <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b">
+        <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-6 h-6" />
+            <span className="font-bold tracking-tight">ReelSprint</span>
+          </div>
+          <nav className="hidden md:flex items-center gap-6 text-sm">
+            <a href="#features" className="hover:opacity-80">Features</a>
+            <a href="#pricing" className="hover:opacity-80">Pricing</a>
+            <a href="#portfolio" className="hover:opacity-80">Portfolio</a>
+            <a href="#contact" className="hover:opacity-80">Contact</a>
+          </nav>
+          <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="inline-flex items-center gap-2 rounded-2xl px-4 py-2 bg-slate-900 text-white shadow hover:shadow-lg">
+            <MessageCircle className="w-4 h-4" /> WhatsApp
+          </a>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="mx-auto max-w-7xl px-4 pt-14 pb-16 grid md:grid-cols-2 gap-10 items-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium">
+              <Star className="w-3.5 h-3.5" /> Done‑for‑you Reels Editing
+            </div>
+            <h1 className="mt-4 text-4xl md:text-6xl font-extrabold leading-tight">
+              Turn raw clips into <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">scroll‑stopping</span> content
+            </h1>
+            <p className="mt-5 text-lg text-slate-600 max-w-xl">
+              Send your footage. Get punchy, captioned short‑form videos that keep viewers watching and drive leads. Simple pricing. Fast turnaround.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href="#pricing" className="rounded-2xl px-5 py-3 bg-slate-900 text-white shadow hover:shadow-lg">See pricing</a>
+              <a href="#contact" className="rounded-2xl px-5 py-3 border">Get a paid sample</a>
+            </div>
+            <div className="mt-6 flex items-center gap-4 text-sm text-slate-600">
+              <div className="flex items-center gap-2"><Check className="w-4 h-4" /> 48–72h delivery</div>
+              <div className="flex items-center gap-2"><Check className="w-4 h-4" /> 2 revisions included</div>
+              <div className="flex items-center gap-2"><Check className="w-4 h-4" /> Brand‑consistent styles</div>
+            </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.1 }} className="relative">
+            <div className="aspect-[9/16] md:aspect-video rounded-3xl shadow-2xl bg-black overflow-hidden">
+              {/* Mock video preview */}
+              <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?q=80&w=1600&auto=format&fit=crop" alt="Editing preview" className="w-full h-full object-cover opacity-80" />
+            </div>
+            <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow p-3 flex items-center gap-3">
+              <Video className="w-5 h-5" /> 500+ seconds edited this week
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="py-14">
+        <div className="mx-auto max-w-7xl px-4">
+          <SectionTitle kicker="Why ReelSprint" heading="Everything you need to scale content" sub="We focus on outcomes: retention, watch time and conversions." />
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((f, i) => (
+              <div key={i} className="rounded-2xl border bg-white p-6 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 grid place-items-center mb-4">{f.icon}</div>
+                <h3 className="font-semibold text-lg">{f.title}</h3>
+                <p className="mt-2 text-sm text-slate-600">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-14 bg-white border-y">
+        <div className="mx-auto max-w-7xl px-4">
+          <SectionTitle kicker="Pricing" heading="Simple plans that grow with you" sub="Start small. Upgrade when you need more volume." />
+          <div className="mt-10 grid md:grid-cols-3 gap-6">
+            {plans.map((p) => (
+              <div key={p.name} className={`rounded-3xl border p-6 shadow-sm ${p.featured ? "ring-2 ring-indigo-600" : ""}`}>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold">{p.name}</h3>
+                  {p.featured && <Badge>Most Popular</Badge>}
+                </div>
+                <div className="mt-4 text-3xl font-extrabold">{p.price}</div>
+                <div className="text-sm text-slate-600 mt-1">{p.p
+i tch}</div>
+                <ul className="mt-4 space-y-2 text-sm">
+                  {p.points.map((pt) => (
+                    <li key={pt} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5" /> <span>{pt}</span></li>
+                  ))}
+                </ul>
+                <a href="#contact" className={`mt-6 inline-flex w-full items-center justify-center rounded-2xl px-4 py-3 ${p.featured ? "bg-slate-900 text-white" : "border"}`}>{p.cta}</a>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 text-center text-sm text-slate-600">One‑off edit pricing from <strong>₹1,499/video</strong>. Bulk discounts available.</div>
+        </div>
+      </section>
+
+      {/* Portfolio */}
+      <section id="portfolio" className="py-14">
+        <div className="mx-auto max-w-7xl px-4">
+          <SectionTitle kicker="Work" heading="Recent edits & styles" sub="A taste of niches and formats we deliver." />
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {portfolio.map((item) => (
+              <div key={item.id} className="group rounded-2xl border bg-white overflow-hidden shadow-sm">
+                <div className="aspect-[9/16] overflow-hidden">
+                  <img src={item.thumb} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition" />
+                </div>
+                <div className="p-4">
+                  <div className="font-semibold">{item.title}</div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {item.tags.map((t) => (
+                      <Badge key={t}>{t}</Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-14 bg-white border-y">
+        <div className="mx-auto max-w-7xl px-4">
+          <SectionTitle kicker="Social Proof" heading="Creators love saving time" />
+          <div className="mt-10 grid md:grid-cols-3 gap-6">
+            {[1,2,3].map((i) => (
+              <div key={i} className="rounded-2xl border bg-white p-6 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <img className="w-10 h-10 rounded-full" src={`https://i.pravatar.cc/100?img=${i+10}`} alt="avatar" />
+                  <div>
+                    <div className="font-semibold">Creator {i}</div>
+                    <div className="text-xs text-slate-600">Niche {i}</div>
+                  </div>
+                </div>
+                <p className="mt-4 text-slate-700">“Turnaround is quick and the hooks/captions improved retention on my shorts. Great value.”</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section id="contact" className="py-14">
+        <div className="mx-auto max-w-7xl px-4">
+          <SectionTitle kicker="Get Started" heading="Book a paid sample or say hello" sub="Share a link to your footage and the style you want. We’ll edit and deliver fast." />
+          <div className="mt-10 grid md:grid-cols-2 gap-8">
+            <form onSubmit={onSubmit} className="rounded-3xl border bg-white p-6 shadow-sm">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Name</label>
+                  <input name="name" required className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Your name" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Email</label>
+                  <input name="email" type="email" required className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="you@example.com" />
+                </div>
+              </div>
+              <div className="mt-4">
+                <label className="text-sm font-medium">WhatsApp (optional)</label>
+                <input name="phone" className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="+91…" />
+              </div>
+              <div className="mt-4">
+                <label className="text-sm font-medium">Footage Link</label>
+                <input name="footage" required className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Google Drive/Dropbox/WeTransfer" />
+              </div>
+              <div className="mt-4">
+                <label className="text-sm font-medium">Describe the style</label>
+                <textarea name="message" rows={4} className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Share references or links you like…" />
+              </div>
+              <button disabled={sending} className="mt-6 inline-flex items-center gap-2 rounded-2xl px-5 py-3 bg-slate-900 text-white disabled:opacity-60">
+                <Sparkles className="w-4 h-4" /> {sending ? "Sending…" : "Request sample"}
+              </button>
+              {ok && <div className="mt-3 text-green-600 text-sm">Thanks! We’ll reply within a few hours.</div>}
+              {err && <div className="mt-3 text-red-600 text-sm">{err}</div>}
+            </form>
+
+            <div className="rounded-3xl border bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-bold">How it works</h3>
+              <ol className="mt-4 space-y-3 text-slate-700">
+                <li className="flex gap-3"><span className="font-semibold">1.</span> Send raw clips + references via the form or WhatsApp.</li>
+                <li className="flex gap-3"><span className="font-semibold">2.</span> We edit a paid sample at a low intro rate.</li>
+                <li className="flex gap-3"><span className="font-semibold">3.</span> Approve style → pick a plan → we deliver weekly.</li>
+              </ol>
+              <div className="mt-6 grid gap-3 text-sm">
+                <a href={`mailto:hello@reelsprint.studio`} className="inline-flex items-center gap-2"><Mail className="w-4 h-4" /> hello@reelsprint.studio</a>
+                <a href={`tel:+${WHATSAPP_NUMBER}`} className="inline-flex items-center gap-2"><Phone className="w-4 h-4" /> +{WHATSAPP_NUMBER}</a>
+                <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="inline-flex items-center gap-2"><MessageCircle className="w-4 h-4" /> WhatsApp chat</a>
+              </div>
+              <div className="mt-6 p-4 rounded-2xl bg-slate-50 text-sm">
+                <div className="font-semibold">What you get</div>
+                <ul className="mt-2 space-y-1">
+                  <li className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5" /> Captions, SFX, color balance, and export for Reels/Shorts/TikTok.</li>
+                  <li className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5" /> 2 revisions included per video.</li>
+                  <li className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5" /> Source project files on request.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-10">
+        <div className="mx-auto max-w-7xl px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-600">
+          <div className="flex items-center gap-2"><Sparkles className="w-4 h-4" /> ReelSprint — Short‑Form Editing Studio</div>
+          <div className="flex items-center gap-4">
+            <a href="#pricing" className="hover:opacity-80">Pricing</a>
+            <a href="#contact" className="hover:opacity-80">Contact</a>
+            <span>© {new Date().getFullYear()} ReelSprint</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
